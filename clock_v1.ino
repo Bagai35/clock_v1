@@ -8,6 +8,9 @@
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 #define SSD1306_I2C_ADDRESS 0x3C
+#define BUTTON_PIN_MENU 6
+#define BUTTON_PIN_NEXT 7 
+#define BUTTON_PIN_PLS1 8
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -40,7 +43,7 @@ void loop() {
   int yearNumber = BUILD_YEAR;
   
   char timeStr[9]; // Time format: "HH:MM:SS"
-  char dateStr[11]; // Формат: "гггг-мм-дд чч:мм:сс"
+  char dateStr[11]; // date format "dd/mm/yyyy"
 
   sprintf(timeStr, "%02d:%02d:%02d", hours, minutes, seconds);
   sprintf(dateStr, "%02d/%02d/%02d", dayOfMonth, monthNumber, yearNumber);
