@@ -14,10 +14,10 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
+int receivedHour, receivedMinute, receivedSecond, receivedDay, receivedMonth, receivedYear;
+
 void setup() {
   Serial.begin(9600); 
-  
-  setTime(hour(), minute(), second(), day(), month(), year());
   
   if(!display.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
@@ -32,15 +32,22 @@ void setup() {
 }
 
 void loop() {
+  if (Serial.available() > 0) {
+    // Read time and date from PC via Serial
+    String input = Serial.readStringUntil('\n');
+    sscanf(input.c_str(), "%d:%d:%d %d/%d/%d", &receivedHour, &receivedMinute, &receivedSecond, &receivedDay, &receivedMonth, &receivedYear);
+    setTime(receivedHour, receivedMinute, receivedSecond, receivedDay, receivedMonth, receivedYear);
+  }
+
   display.clearDisplay();
    
   // take real time and transform to string
   int hours = hour();
   int minutes = minute();
   int seconds = second();
-  int dayOfMonth = BUILD_DAY;
-  int monthNumber = BUILD_MONTH;
-  int yearNumber = BUILD_YEAR;
+  int dayOfMonth = day();
+  int monthNumber = month();
+  int yearNumber = year();
   
   char timeStr[9]; // Time format: "HH:MM:SS"
   char dateStr[11]; // date format "dd/mm/yyyy"
@@ -54,5 +61,5 @@ void loop() {
   display.print(dateStr);
   
   display.display();
-  delay(1000);
+  delay(1000); // Update every second
 }
