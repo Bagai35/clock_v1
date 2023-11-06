@@ -14,6 +14,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 void setup() {
   Serial.begin(9600); 
   
+  setTime(hour(), minute(), second(), day(), month(), year());
+  
   if(!display.begin(SSD1306_SWITCHCAPVCC, SSD1306_I2C_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -28,7 +30,7 @@ void setup() {
 
 void loop() {
   display.clearDisplay();
-  
+   
   // take real time and transform to string
   int hours = hour();
   int minutes = minute();
@@ -38,17 +40,15 @@ void loop() {
   int yearNumber = BUILD_YEAR;
   
   char timeStr[9]; // Time format: "HH:MM:SS"
-  char buildTimeStr[20]; // Формат: "гггг-мм-дд чч:мм:сс"
+  char dateStr[11]; // Формат: "гггг-мм-дд чч:мм:сс"
 
   sprintf(timeStr, "%02d:%02d:%02d", hours, minutes, seconds);
+  sprintf(dateStr, "%02d/%02d/%02d", dayOfMonth, monthNumber, yearNumber);
 
-  sprintf(buildTimeStr, "%s", __DATE__);
-
-  display.setCursor(0, 0);
+  display.setCursor(18, 10);
   display.print(timeStr);
-  display.setCursor(0, 40);
-  display.print(buildTimeStr);
-  
+  display.setCursor(6, 40);
+  display.print(dateStr);
   
   display.display();
   delay(1000);
